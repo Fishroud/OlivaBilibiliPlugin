@@ -1,0 +1,2 @@
+# OlivaBilibiliPlugin
+基于ovo下的bilibili插件
