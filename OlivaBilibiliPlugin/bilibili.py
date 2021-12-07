@@ -24,8 +24,8 @@ class BILIUSER:
         self.live = {}
         self.room_init = {}
         self.islegal = False
-        self.getUserDatafromApi()
         if mid != 0:
+            self.getUserDatafromApi()
             self.getUserDatabyRoomId(self.live['roomid'])
         
 
@@ -109,6 +109,93 @@ class BILIUSER:
             return "用户不存在"
 
 
+
+
+
+
+class VIDEO:
+    def __init__(self ,bvid = "0" ,aid = 0):
+        self.bvid = bvid
+        self.aid = aid
+        self.cid = None
+        self.tname = None
+        self.pic = None
+        self.title = None
+        self.pubdate = None
+        self.ctime = None
+        self.desc = None
+        self.owner = {}
+        self.state = {}
+        self.first_frame = None
+        self.islegal = False
+
+    def getVideoDataFromApi(self ,type = "bvid"):
+        if type == "bvid":
+            url = "http://api.bilibili.com/x/web-interface/view?bvid=" + self.bvid
+        elif type == "aid":
+            url = "http://api.bilibili.com/x/web-interface/view?aid=" + str(self.aid)
+        payload={}
+        headers = {
+          'Cookie': 'LIVE_BUVID=AUTO2616196871676659'
+        }
+        response = requests.request("GET", url, headers=headers, data=payload)
+        videojson = json.loads(response.text)
+        if videojson['code'] == 0:
+            self.bvid = videojson['data']['bvid']
+            self.aid = videojson['data']['aid']
+            self.cid = videojson['data']['cid']
+            self.tname = videojson['data']['tname']
+            self.pic = videojson['data']['pic']
+            self.title = videojson['data']['title']
+            self.pubdate = videojson['data']['pubdate']
+            self.ctime = videojson['data']['ctime']
+            self.desc = videojson['data']['desc']
+            self.owner = videojson['data']['owner']
+            self.state = videojson['data']['stat']
+            self.first_frame = videojson['data']['pages'][0]['first_frame']
+            self.islegal = True
+
+    def __str__(self):
+        if self.isLegal():
+            output = "[" + self.bvid + "]" + "[" + str(self.cid) + "]" + "[" + str(self.aid) + "]" + "\n"
+            output += "标题：" + self.title + "\n"
+            output += "分区：" + self.tname + "\n"
+            output += "封面链接：" + self.pic + "\n"
+            output += "发布时间：" + str(self.pubdate) + "\n"
+            output += "投稿时间：" + str(self.ctime) + "\n"
+            output += "简介：" + self.desc + "\n"
+            output += "点赞投币收藏：" + str(self.state['like']) + "-" + str(self.state['coin']) + "-" + str(self.state['favorite']) + "\n"
+            output += "分区：" + self.tname + "\n"
+            pic = LoadImg(self.pic)
+            pic.show()
+            return output
+        else:
+            return "视频信息加载失败"
+
+    def isLegal(self):
+        return self.islegal
+    
+    def getVideoInfo(self):
+        if self.isLegal():
+            output = "[" + self.bvid + "]" + "[" + str(self.cid) + "]" + "[" + str(self.aid) + "]" + "\n"
+            output += "标题：" + self.title + "\n"
+            output += "分区：" + self.tname + "\n"
+            output += "封面链接：" + self.pic + "\n"
+            output += "发布时间：" + str(self.pubdate) + "\n"
+            output += "投稿时间：" + str(self.ctime) + "\n"
+            output += "简介：" + self.desc + "\n"
+            output += "点赞投币收藏：" + str(self.state['like']) + "-" + str(self.state['coin']) + "-" + str(self.state['favorite']) + "\n"
+            output += "分区：" + self.tname + "\n"
+            return output
+        else:
+            return "视频查询失败"
+
+
+
+
+
+
+
 def LoadImg(img_url):
     header = {}
     response = requests.get(img_url, headers=header, stream=True)
@@ -118,6 +205,11 @@ def LoadImg(img_url):
     del response
 
 
+
+
+
+
+
 #bili = BILIUSER()
 #bili.getUserDatabyRoomId(5151978)
 #bili.getUserDatafromApi()
@@ -125,9 +217,9 @@ def LoadImg(img_url):
 
 #LoadImg("http://i0.hdslb.com/bfs/face/74901f0be234adb631be1faead5c872974733d85.jpg").show()
 
-
-
-
+#v = VIDEO(0 ,891716205)
+#v.getVideoDataFromApi("aid")
+#print(v)
 
 
 
