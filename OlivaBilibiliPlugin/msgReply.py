@@ -4,10 +4,12 @@ import OlivaBilibiliPlugin
 
 def unity_reply(plugin_event, Proc):
     command_list = deleteBlank(plugin_event.data.message)
+
     if command_list[0].lower() == "/bilibili":
         if len(command_list) == 1:
             plugin_event.reply("OlivaBilibiliPlugin by Fishroud")
-        elif len(command_list) == 3:  #command_list[2].isdigit():
+    elif command_list[0].lower() == "/up":
+        if len(command_list) == 3:  #command_list[2].isdigit():
             if command_list[1].lower() == "--uid" or command_list[1].lower() == "-u":
                 if command_list[2].isdigit():
                     biliUser = OlivaBilibiliPlugin.bilibili.BILIUSER(int(command_list[2]))
@@ -25,6 +27,20 @@ def unity_reply(plugin_event, Proc):
                     plugin_event.reply(biliUser.getUserInfo())
                 else:
                     plugin_event.reply("[--roomid]的参数非法")
+    elif command_list[0].lower() == "/video":
+        if len(command_list) == 3:  #command_list[2].isdigit():
+            if command_list[1].lower() == "--aid" or command_list[1].lower() == "-a":
+                if command_list[2].isdigit():
+                    video = OlivaBilibiliPlugin.bilibili.VIDEO(0 ,int(command_list[2]))
+                    video.getVideoDataFromApi("aid")
+                    plugin_event.reply(video.getVideoInfo())
+                else:
+                    plugin_event.reply("[--aid]的参数非法")
+            elif command_list[1].lower() == "--bvid" or command_list[1].lower() == "-b":
+                video = OlivaBilibiliPlugin.bilibili.VIDEO(command_list[2])
+                video.getVideoDataFromApi()
+                plugin_event.reply(video.getVideoInfo())
+
 
 
 
