@@ -1,0 +1,13 @@
+{
+    "name" : "Bilibili测试插件",
+    "namespace" : "OlivaBilibiliPlugin",
+    "priority" : 30000,
+    "message_mode" : "old_string",
+    "support" : [
+        {
+            "sdk" : "onebot",
+            "platform" : "qq",
+            "model" : "all"
+        }
+    ]
+}
