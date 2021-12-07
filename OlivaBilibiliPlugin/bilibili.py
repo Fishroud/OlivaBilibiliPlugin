@@ -6,6 +6,7 @@ from PIL import Image
 import requests
 import json
 import base64
+import time
 
 
 
@@ -80,30 +81,33 @@ class BILIUSER:
     def userInfoImage(self):
         if self.isLegal():
             face_image = LoadImg(self.face_url)
-            pendant_image = LoadImg(self.pendant['image'])
             background = Image.new('RGBA' ,(420,420))
             face_image.thumbnail((220,220))
-            face_image.convert('RGBA')
-            pendant_image.convert('RGBA')
-            r,g,b,a = pendant_image.split()
+            face_image = face_image.convert('RGBA')
             background.paste(face_image ,(100,100))
-            background.paste(pendant_image ,(0,0) ,mask = a)
+            if self.pendant['image'] != "":
+                pendant_image = LoadImg(self.pendant['image'])
+                pendant_image = pendant_image.convert('RGBA')
+                r,g,b,a = pendant_image.split()
+                background.paste(pendant_image ,(0,0) ,mask = a)
             #background.show()
             
             '''
             output_buffer = BytesIO()
             background.save(output_buffer, format='PNG')
             byte_data = output_buffer.getvalue()
-            base64_str = base64.b64encode(byte_data)
+            base64_str = base64.b64encode(byte_data).decode('utf-8')
             '''
             save_path = OlivaBilibiliPlugin.main.save_path + "/" + str(self.mid) + ".PNG"
             background.save(save_path)
-            return
+        #return base64_str
+        return
 
     def getUserInfo(self):
         if self.isLegal():
             output = self.name + "[" + self.sex + "]" + "[LV" + str(self.level) + "]\n"
             output += self.sign
+            self.userInfoImage()
             return output
         else:
             return "用户不存在"
@@ -177,12 +181,12 @@ class VIDEO:
     
     def getVideoInfo(self):
         if self.isLegal():
-            output = "[" + self.bvid + "]" + "[" + str(self.cid) + "]" + "[" + str(self.aid) + "]" + "\n"
+            output = "[" + self.bvid + "]" + "\n" #"[" + str(self.cid) + "]" + "[" + str(self.aid) + "]" + 
+            output += "[CQ:image,file=" + self.pic + "]\n"
             output += "标题：" + self.title + "\n"
             output += "分区：" + self.tname + "\n"
-            output += "封面链接：" + self.pic + "\n"
-            output += "发布时间：" + str(self.pubdate) + "\n"
-            output += "投稿时间：" + str(self.ctime) + "\n"
+            output += "发布时间：" + time.strftime("%Y-%m-%d %H:%M", time.localtime(self.pubdate)) + "\n"
+            output += "投稿时间：" + time.strftime("%Y-%m-%d %H:%M", time.localtime(self.ctime)) + "\n"
             output += "简介：" + self.desc + "\n"
             output += "点赞投币收藏：" + str(self.state['like']) + "-" + str(self.state['coin']) + "-" + str(self.state['favorite']) + "\n"
             output += "分区：" + self.tname + "\n"
