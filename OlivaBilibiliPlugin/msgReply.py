@@ -13,10 +13,12 @@ def unity_reply(plugin_event, Proc):
             if command_list[1].lower() == "--uid" or command_list[1].lower() == "-u":
                 if command_list[2].isdigit():
                     biliUser = OlivaBilibiliPlugin.bilibili.BILIUSER(int(command_list[2]))
-                    plugin_event.reply(biliUser.getUserInfo())
-                    save_path = OlivaBilibiliPlugin.main.run_path + "/plugin/data/OlivaBilibiliPlugin/" + str(biliUser.mid) + ".PNG"
-                    cqcode = "[CQ:image,file=file///" + save_path + "]"
-                    #plugin_event.reply(cqcode)
+                    #cqcode = "[CQ:image,file=base64://" + biliUser.userInfoImage() + "]"
+                    save_path = "C:\\\\Users\\86178\\source\\repos\\OlivOS\\plugin\\data\\OlivaBilibiliPlugin\\" + str(biliUser.mid) + ".PNG"
+                    cqcode = "[CQ:image,file=file:///" + save_path + "]"
+                    plugin_event.reply(biliUser.getUserInfo() + cqcode)
+                    #save_path = OlivaBilibiliPlugin.main.run_path + "/plugin/data/OlivaBilibiliPlugin/" + str(biliUser.mid) + ".PNG"
+                    #save_path = "C:\\\\Users\\86178\\source\\repos\\OlivOS\\plugin\\data\\OlivaBilibiliPlugin\\" + str(biliUser.mid) + ".PNG"
                 else:
                     plugin_event.reply("[--uid]的参数非法")
             elif command_list[1].lower() == "--roomid" or command_list[1].lower() == "-r":
@@ -24,7 +26,9 @@ def unity_reply(plugin_event, Proc):
                     biliUser = OlivaBilibiliPlugin.bilibili.BILIUSER()
                     biliUser.getUserDatabyRoomId(int(command_list[2]))
                     biliUser.getUserDatafromApi()
-                    plugin_event.reply(biliUser.getUserInfo())
+                    save_path = "C:\\\\Users\\86178\\source\\repos\\OlivOS\\plugin\\data\\OlivaBilibiliPlugin\\" + str(biliUser.mid) + ".PNG"
+                    cqcode = "[CQ:image,file=file:///" + save_path + "]"
+                    plugin_event.reply(biliUser.getUserInfo() + cqcode)
                 else:
                     plugin_event.reply("[--roomid]的参数非法")
     elif command_list[0].lower() == "/video":
