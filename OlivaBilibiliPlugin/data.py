@@ -6,3 +6,4 @@ save_path = "./plugin/data/OlivaBilibiliPlugin"
 
 global save_path_full
 save_path_full = ""
+
