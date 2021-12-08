@@ -98,7 +98,7 @@ class BILIUSER:
             byte_data = output_buffer.getvalue()
             base64_str = base64.b64encode(byte_data).decode('utf-8')
             '''
-            save_path = OlivaBilibiliPlugin.main.save_path + "/" + str(self.mid) + ".PNG"
+            save_path = OlivaBilibiliPlugin.data.save_path + "/" + str(self.mid) + ".PNG"
             background.save(save_path)
         #return base64_str
         return

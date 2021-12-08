@@ -59,7 +59,7 @@ def unity_reply(plugin_event, Proc):
             elif  juUrl==3:
                 plugin_event.reply("已识别到人物主页链接")
                 biliUser = OlivaBilibiliPlugin.bilibili.BILIUSER(int(EnUrl))
-                save_path = OlivaBilibiliPlugin.main.run_path + "/plugin/data/OlivaBilibiliPlugin/" + str(biliUser.mid) + ".PNG"
+                save_path = OlivaBilibiliPlugin.data.save_path_full + "/plugin/data/OlivaBilibiliPlugin/" + str(biliUser.mid) + ".PNG"
                 cqcode = "[CQ:image,file=file///" + save_path + "]"
                 plugin_event.reply(biliUser.getUserInfo() + cqcode)
 
