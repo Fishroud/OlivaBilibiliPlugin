@@ -3,16 +3,10 @@ import OlivaBilibiliPlugin
 
 import os
 
-global save_path
-save_path = "./plugin/data/OlivaBilibiliPlugin"
-
-global run_path
-run_path = "C:/Users/86178/source/repos/OlivOS"
-
 class Event(object):
     def init(plugin_event, Proc):        
-        if not os.path.exists(save_path):
-            os.mkdir(save_path)
+        if not os.path.exists(OlivaBilibiliPlugin.data.save_path):
+            os.mkdir(OlivaBilibiliPlugin.data.save_path)
         pass
 
     def private_message(plugin_event, Proc):
