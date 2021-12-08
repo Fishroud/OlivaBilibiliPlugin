@@ -156,7 +156,7 @@ class VIDEO:
             self.desc = videojson['data']['desc']
             self.owner = videojson['data']['owner']
             self.state = videojson['data']['stat']
-            self.first_frame = videojson['data']['pages'][0]['first_frame']
+            #self.first_frame = videojson['data']['pages'][0]['first_frame']
             self.islegal = True
 
     def __str__(self):
