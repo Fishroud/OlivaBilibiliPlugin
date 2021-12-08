@@ -53,15 +53,15 @@ def unity_reply(plugin_event, Proc):
                 biliUser = OlivaBilibiliPlugin.bilibili.BILIUSER()
                 biliUser.getUserDatabyRoomId(int(EnUrl))
                 biliUser.getUserDatafromApi()
-                plugin_event.reply(biliUser.getUserInfo())
-                save_path = OlivaBilibiliPlugin.main.run_path + "/plugin/data/OlivaBilibiliPlugin/" + str(biliUser.mid) + ".PNG"
+                save_path = OlivaBilibiliPlugin.data.save_path_full + str(biliUser.mid) + ".PNG"
                 cqcode = "[CQ:image,file=file///" + save_path + "]"
+                plugin_event.reply(biliUser.getUserInfo() + cqcode)
             elif  juUrl==3:
                 plugin_event.reply("已识别到人物主页链接")
                 biliUser = OlivaBilibiliPlugin.bilibili.BILIUSER(int(EnUrl))
-                plugin_event.reply(biliUser.getUserInfo())
                 save_path = OlivaBilibiliPlugin.main.run_path + "/plugin/data/OlivaBilibiliPlugin/" + str(biliUser.mid) + ".PNG"
                 cqcode = "[CQ:image,file=file///" + save_path + "]"
+                plugin_event.reply(biliUser.getUserInfo() + cqcode)
 
 
     if len(command_list) == 3:
@@ -70,7 +70,7 @@ def unity_reply(plugin_event, Proc):
             if command_list[1].lower() == "--uid" or command_list[1].lower() == "-u":
                 if command_list[2].isdigit():
                     biliUser = OlivaBilibiliPlugin.bilibili.BILIUSER(int(command_list[2]))
-                    save_path = "C:\\\\Users\\HideUsSaveUs\\Desktop\\OlivOS\\plugin\\data\\OlivaBilibiliPlugin\\" + str(biliUser.mid) + ".PNG"
+                    save_path = OlivaBilibiliPlugin.data.save_path_full + str(biliUser.mid) + ".PNG"
                     cqcode = "[CQ:image,file=file:///" + save_path + "]"
                     plugin_event.reply(biliUser.getUserInfo() + cqcode)
                 else:
@@ -80,7 +80,7 @@ def unity_reply(plugin_event, Proc):
                     biliUser = OlivaBilibiliPlugin.bilibili.BILIUSER()
                     biliUser.getUserDatabyRoomId(int(command_list[2]))
                     biliUser.getUserDatafromApi()
-                    save_path = "C:\\\\Users\\HideUsSaveUs\\Desktop\\OlivOS\\plugin\\data\\OlivaBilibiliPlugin\\" + str(biliUser.mid) + ".PNG"
+                    save_path = OlivaBilibiliPlugin.data.save_path_full + str(biliUser.mid) + ".PNG"
                     cqcode = "[CQ:image,file=file:///" + save_path + "]"
                     plugin_event.reply(biliUser.getUserInfo() + cqcode)
                 else:
