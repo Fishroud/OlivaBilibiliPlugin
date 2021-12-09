@@ -3,6 +3,7 @@ import OlivaBilibiliPlugin
 
 from io import BytesIO
 from PIL import Image
+import urllib.parse
 import requests
 import json
 import base64
@@ -210,9 +211,28 @@ def LoadImg(img_url):
 
 
 
+class URL:
+    def __init__(self, url):
+        self.url = url
+        self.netloc = None
+        self.sheme = None
+        self.path = None
+        self.path_list = []
+        self.query = {}
+        self.analyseUrl()
 
 
+    def analyseUrl(self):
+        self.netloc = urllib.parse.urlsplit(self.url).netloc
+        self.sheme = urllib.parse.urlsplit(self.url).scheme
+        self.path = urllib.parse.urlsplit(self.url).path
+        self.query = dict(urllib.parse.parse_qsl(urllib.parse.urlsplit(self.url).query))
+        self.path_list = self.path2list()
+        return
 
+    def path2list(self):
+        path_list = list(filter(None,self.path.split("/")))
+        return path_list
 
 #bili = BILIUSER()
 #bili.getUserDatabyRoomId(5151978)
@@ -226,6 +246,8 @@ def LoadImg(img_url):
 #print(v)
 
 
-
-
+#url = URL("https://www.bilibili.com/video/BV1s34y1X7mt?spm_id_from=333.851.b_7265636f6d6d656e64.6")
+#print(url.netloc)
+#print(url.path_list[1])
+#print(url.query['spm_id_from'])
 
