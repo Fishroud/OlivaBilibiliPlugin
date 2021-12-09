@@ -30,12 +30,18 @@ def unity_reply(plugin_event, Proc):
                     biliUser.getUserDatabyRoomId(int(url.path_list[0]))
                     biliUser.getUserDatafromApi()
                     response = biliUser.getUserInfo()
+                    save_path = image_path + "\\" + str(biliUser.mid) + ".PNG"
+                    cqcode = "[CQ:image,file=file:///" + save_path + "]"
+                    plugin_event.reply(cqcode)
                     if response != "用户不存在":
                         plugin_event.reply(response)
                         del url,biliUser
             elif url.netloc == "space.bilibili.com":
                 if url.path_list[0].isdigit():
                     biliUser = OlivaBilibiliPlugin.bilibili.BILIUSER(int(url.path_list[0]))
+                    save_path = image_path + "\\" + str(biliUser.mid) + ".PNG"
+                    cqcode = "[CQ:image,file=file:///" + save_path + "]"
+                    plugin_event.reply(cqcode)
                     response = biliUser.getUserInfo()
                     if response != "用户不存在":
                         plugin_event.reply(response)
