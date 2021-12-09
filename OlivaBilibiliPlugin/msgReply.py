@@ -29,11 +29,11 @@ def unity_reply(plugin_event, Proc):
                     biliUser = OlivaBilibiliPlugin.bilibili.BILIUSER()
                     biliUser.getUserDatabyRoomId(int(url.path_list[0]))
                     biliUser.getUserDatafromApi()
-                    response = biliUser.getUserInfo()
+                    response = biliUser.getLiveInfo()
                     if response != "用户不存在":
-                        save_path = image_path + "\\" + str(biliUser.mid) + ".PNG"
-                        cqcode = "[CQ:image,file=file:///" + save_path + "]"
-                        plugin_event.reply(response + cqcode)
+                        #save_path = image_path + "\\" + str(biliUser.mid) + ".PNG"
+                        #cqcode = "[CQ:image,file=file:///" + save_path + "]"
+                        plugin_event.reply("鱼子酱发现了bilibili直播房间链接！\n" + response)
                         del url,biliUser
             elif url.netloc == "space.bilibili.com":
                 if url.path_list[0].isdigit():

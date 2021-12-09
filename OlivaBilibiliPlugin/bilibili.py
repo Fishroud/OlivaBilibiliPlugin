@@ -17,6 +17,7 @@ class BILIUSER:
         self.name = None
         self.sex = None
         self.face_url = None
+        self.live_key_frame = None
         self.sign = None
         self.level = None
         self.silence = None
@@ -68,6 +69,24 @@ class BILIUSER:
             self.room_init = userjson['data']
         return
 
+    def getUserLiveStatusbyUids(self ,uid_list = []):
+        if not uid_list:
+            uid_list.append(self.mid)
+        api = "https://api.live.bilibili.com/room/v1/Room/get_status_info_by_uids"
+        payload = json.dumps({
+          "uids": uid_list
+        })
+        headers = {
+          'Content-Type': 'application/json',
+          'Cookie': 'LIVE_BUVID=AUTO2616196871676659'
+        }
+        response = requests.request("POST", api, headers=headers, data=payload)
+        userjson = json.loads(response.text)
+        if userjson['code'] == 0:
+            self.live_key_frame = userjson['data'][self.mid]['keyframe']
+
+
+
     def __str__(self):
         if self.isLegal():
             output = self.name + "[" + self.sex + "]" + "[LV" + str(self.level) + "]\n"
@@ -112,9 +131,22 @@ class BILIUSER:
             return output
         else:
             return "用户不存在"
-
-
-
+        
+    def getLiveInfo(self):
+        if self.isLegal():
+            output = "该主播当前"
+            if self.live['liveStatus'] != 0:
+                output += "正在直播\n"
+                output += "开播时间：" + time.strftime("%Y-%m-%d %H:%M", time.localtime(self.room_init['live_time'])) + "\n"
+            else:
+                output += "未在直播\n"
+            output += self.name + "[" + str(self.mid) + "]" + "\n"
+            output += "https://live.bilibili.com/" + str(self.live['roomid']) + "\n"
+            output += "标题：" + self.live['title'] + "\n"
+            output += "[CQ:image,file=" + self.live['cover'] + "]\n"
+            return output
+        else:
+            return "用户不存在"
 
 
 
