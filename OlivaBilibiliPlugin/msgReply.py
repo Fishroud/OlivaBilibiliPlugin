@@ -1,6 +1,7 @@
 import OlivOS
 import OlivaBilibiliPlugin
 
+import os
 import re
 
 def unity_reply(plugin_event, Proc):
@@ -9,6 +10,7 @@ def unity_reply(plugin_event, Proc):
     command_list = deleteBlank(plugin_event.data.message)
     matchBV = re.match( r'^.*BV(\S{10}).*$', command_list[0], re.I)
     matchUrl = re.match( r'^.*(https?://.+)$', command_list[0])
+    image_path = os.path.abspath(OlivaBilibiliPlugin.data.save_path).replace("\\","\\\\")
 
     if len(command_list) == 1:
         if command_list[0].lower() == "/bilibili":
@@ -49,7 +51,7 @@ def unity_reply(plugin_event, Proc):
             if command_list[1].lower() == "--uid" or command_list[1].lower() == "-u":
                 if command_list[2].isdigit():
                     biliUser = OlivaBilibiliPlugin.bilibili.BILIUSER(int(command_list[2]))
-                    save_path = OlivaBilibiliPlugin.data.save_path_full + str(biliUser.mid) + ".PNG"
+                    save_path = image_path + "\\" + str(biliUser.mid) + ".PNG"
                     cqcode = "[CQ:image,file=file:///" + save_path + "]"
                     plugin_event.reply(biliUser.getUserInfo() + cqcode)
                 else:
@@ -59,7 +61,7 @@ def unity_reply(plugin_event, Proc):
                     biliUser = OlivaBilibiliPlugin.bilibili.BILIUSER()
                     biliUser.getUserDatabyRoomId(int(command_list[2]))
                     biliUser.getUserDatafromApi()
-                    save_path = OlivaBilibiliPlugin.data.save_path_full + str(biliUser.mid) + ".PNG"
+                    save_path = image_path + "\\" + str(biliUser.mid) + ".PNG"
                     cqcode = "[CQ:image,file=file:///" + save_path + "]"
                     plugin_event.reply(biliUser.getUserInfo() + cqcode)
                 else:
