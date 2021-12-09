@@ -9,7 +9,7 @@ def unity_reply(plugin_event, Proc):
 
     command_list = deleteBlank(plugin_event.data.message)
     matchBV = re.match( r'^.*BV(\S{10}).*$', command_list[0], re.I)
-    matchUrl = re.match( r'^.*(https?://.+)$', command_list[0])
+    matchUrl = re.match( r'(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]', command_list[0])
     image_path = os.path.abspath(OlivaBilibiliPlugin.data.save_path).replace("\\","\\\\")
 
     if len(command_list) == 1:
@@ -23,7 +23,7 @@ def unity_reply(plugin_event, Proc):
             if response != "视频查询失败":
                 plugin_event.reply(response)
         elif matchUrl:
-            url = OlivaBilibiliPlugin.bilibili.URL(matchUrl.group(1))
+            url = OlivaBilibiliPlugin.bilibili.URL(matchUrl.group(0))
             if url.netloc == "live.bilibili.com":
                 if url.path_list[0].isdigit():
                     biliUser = OlivaBilibiliPlugin.bilibili.BILIUSER()
@@ -31,14 +31,18 @@ def unity_reply(plugin_event, Proc):
                     biliUser.getUserDatafromApi()
                     response = biliUser.getUserInfo()
                     if response != "用户不存在":
-                        plugin_event.reply(response)
+                        save_path = image_path + "\\" + str(biliUser.mid) + ".PNG"
+                        cqcode = "[CQ:image,file=file:///" + save_path + "]"
+                        plugin_event.reply(response + cqcode)
                         del url,biliUser
             elif url.netloc == "space.bilibili.com":
                 if url.path_list[0].isdigit():
                     biliUser = OlivaBilibiliPlugin.bilibili.BILIUSER(int(url.path_list[0]))
                     response = biliUser.getUserInfo()
                     if response != "用户不存在":
-                        plugin_event.reply(response)
+                        save_path = image_path + "\\" + str(biliUser.mid) + ".PNG"
+                        cqcode = "[CQ:image,file=file:///" + save_path + "]"
+                        plugin_event.reply(response + cqcode)
                         del url,biliUser
             elif url.netloc == "b23.tv":
                 pass
