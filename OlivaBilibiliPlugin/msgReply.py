@@ -8,7 +8,7 @@ def unity_reply(plugin_event, Proc):
 
     command_list = deleteBlank(plugin_event.data.message)
     matchBV = re.match( r'^.*BV(\S{10}).*$', command_list[0], re.I)
-
+    matchUrl = re.match( r'^.*(https?://.+)$', command_list[0])
 
     if len(command_list) == 1:
         if command_list[0].lower() == "/bilibili":
@@ -17,51 +17,30 @@ def unity_reply(plugin_event, Proc):
             bvid = matchBV.group(1)
             video = OlivaBilibiliPlugin.bilibili.VIDEO(bvid)
             video.getVideoDataFromApi()
-            if video.getVideoInfo() != "视频查询失败":
-                plugin_event.reply(video.getVideoInfo())
-        elif command_list[0][0:4]=="http":
-            EnUrl,Av=EncodeUrl(command_list[0])
-            juUrl=judgeUrl(command_list[0])
-            if juUrl==0:
-                plugin_event.reply("已识别到长链接")
-                if Av==0:
-                    video = OlivaBilibiliPlugin.bilibili.VIDEO(EnUrl)
-                    video.getVideoDataFromApi()
-                    plugin_event.reply(video.getVideoInfo())
-                else:
-                    if EnUrl.isdigit():
-                        video = OlivaBilibiliPlugin.bilibili.VIDEO(0 ,int(EnUrl))
-                        video.getVideoDataFromApi("aid")
-                        plugin_event.reply(video.getVideoInfo())
-                    else:
-                        plugin_event.reply("[--aid]的参数非法")
-            elif  juUrl==1:
-                plugin_event.reply("已识别到短链接")
-                if Av==0:
-                    video = OlivaBilibiliPlugin.bilibili.VIDEO(EnUrl)
-                    video.getVideoDataFromApi()
-                    plugin_event.reply(video.getVideoInfo())
-                else:
-                    if EnUrl.isdigit():
-                        video = OlivaBilibiliPlugin.bilibili.VIDEO(0 ,int(EnUrl))
-                        video.getVideoDataFromApi("aid")
-                        plugin_event.reply(video.getVideoInfo())
-                    else:
-                        plugin_event.reply("[--aid]的参数非法")
-            elif  juUrl==2:
-                plugin_event.reply("已识别到直播间链接")
-                biliUser = OlivaBilibiliPlugin.bilibili.BILIUSER()
-                biliUser.getUserDatabyRoomId(int(EnUrl))
-                biliUser.getUserDatafromApi()
-                save_path = OlivaBilibiliPlugin.data.save_path_full + str(biliUser.mid) + ".PNG"
-                cqcode = "[CQ:image,file=file///" + save_path + "]"
-                plugin_event.reply(biliUser.getUserInfo() + cqcode)
-            elif  juUrl==3:
-                plugin_event.reply("已识别到人物主页链接")
-                biliUser = OlivaBilibiliPlugin.bilibili.BILIUSER(int(EnUrl))
-                save_path = OlivaBilibiliPlugin.data.save_path_full + "/plugin/data/OlivaBilibiliPlugin/" + str(biliUser.mid) + ".PNG"
-                cqcode = "[CQ:image,file=file///" + save_path + "]"
-                plugin_event.reply(biliUser.getUserInfo() + cqcode)
+            response = video.getVideoInfo()
+            if response != "视频查询失败":
+                plugin_event.reply(response)
+        elif matchUrl:
+            url = OlivaBilibiliPlugin.bilibili.URL(matchUrl.group(1))
+            if url.netloc == "live.bilibili.com":
+                if url.path_list[0].isdigit():
+                    biliUser = OlivaBilibiliPlugin.bilibili.BILIUSER()
+                    biliUser.getUserDatabyRoomId(int(url.path_list[0]))
+                    biliUser.getUserDatafromApi()
+                    response = biliUser.getUserInfo()
+                    if response != "用户不存在":
+                        plugin_event.reply(response)
+                        del url,biliUser
+            elif url.netloc == "space.bilibili.com":
+                if url.path_list[0].isdigit():
+                    biliUser = OlivaBilibiliPlugin.bilibili.BILIUSER(int(url.path_list[0]))
+                    response = biliUser.getUserInfo()
+                    if response != "用户不存在":
+                        plugin_event.reply(response)
+                        del url,biliUser
+            elif url.netloc == "b23.tv":
+                pass
+
 
 
     if len(command_list) == 3:
@@ -98,7 +77,10 @@ def unity_reply(plugin_event, Proc):
                     video = OlivaBilibiliPlugin.bilibili.VIDEO(command_list[2])
                     video.getVideoDataFromApi()
                     plugin_event.reply(video.getVideoInfo())
-            
+
+
+
+
 
 
 
@@ -107,54 +89,3 @@ def unity_reply(plugin_event, Proc):
 def deleteBlank(str):
     str_list = list(filter(None,str.split(" ")))
     return str_list
-
-
-def judgeUrl(url):
-    url=url.split("/")
-    if url[2]=="www.bilibili.com":
-        return 0
-    elif url[2]=="b23.tv":
-        return 1
-    elif url[2]=="live.bilibili.com":
-        return 2
-    elif url[2]=="space.bilibili.com":
-        return 3
-    else:
-        return 4
-def EncodeUrl(url):
-    judge=judgeUrl(url)
-    av=0
-    if judge == 0:
-        try:
-            re1=re.findall(r"https://www.bilibili.com/video/(.*?)[\?\/].*",url,re.S)[0]
-        except:
-            re1=re.findall(r"https://www.bilibili.com/video/(.*)",url,re.S)[0]
-        finally:
-            if re1[0:2].lower()=="av":
-                re1=re1[2:]
-                av=1
-        return re1,av
-    elif judge==1:
-        try:
-            re1=re1=re.findall(r"https://b23.tv/(.*?)[\?\/].*",url,re.S)[0]
-        except:
-            re1=re.findall(r"https://b23.tv/(.*)",url,re.S)[0]
-        finally:
-            if re1[0:2].lower()=="av":
-                re1=re1[2:]
-                av=1
-        return re1,av
-    elif judge==2:
-        try:
-            re1=re1=re.findall(r"https://live.bilibili.com/(.*?)[\?\/].*",url,re.S)[0]
-        except:
-            re1=re.findall(r"https://live.bilibili.com/(.*)",url,re.S)[0]
-        return re1,av
-    elif judge==3:
-        try:
-            re1=re1=re.findall(r"https://space.bilibili.com/(.*?)[\?\/].*",url,re.S)[0]
-        except:
-            re1=re.findall(r"https://space.bilibili.com/(.*)",url,re.S)[0]
-        return re1,av
-    else:
-        return 
