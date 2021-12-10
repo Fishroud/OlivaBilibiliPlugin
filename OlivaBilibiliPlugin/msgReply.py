@@ -33,7 +33,7 @@ def unity_reply(plugin_event, Proc):
                     if response != "用户不存在":
                         #save_path = image_path + "\\" + str(biliUser.mid) + ".PNG"
                         #cqcode = "[CQ:image,file=file:///" + save_path + "]"
-                        plugin_event.reply("鱼子酱发现了bilibili直播房间链接！\n" + response)
+                        plugin_event.reply("发现了bilibili直播房间链接！\n" + response)
                         del url,biliUser
             elif url.netloc == "space.bilibili.com":
                 if url.path_list[0].isdigit():

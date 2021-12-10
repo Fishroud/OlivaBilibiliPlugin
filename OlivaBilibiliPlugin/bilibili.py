@@ -265,21 +265,3 @@ class URL:
     def path2list(self):
         path_list = list(filter(None,self.path.split("/")))
         return path_list
-
-#bili = BILIUSER()
-#bili.getUserDatabyRoomId(5151978)
-#bili.getUserDatafromApi()
-#print(bili.room_init['uid'])
-
-#LoadImg("http://i0.hdslb.com/bfs/face/74901f0be234adb631be1faead5c872974733d85.jpg").show()
-
-#v = VIDEO(0 ,891716205)
-#v.getVideoDataFromApi("aid")
-#print(v)
-
-
-#url = URL("https://www.bilibili.com/video/BV1s34y1X7mt?spm_id_from=333.851.b_7265636f6d6d656e64.6")
-#print(url.netloc)
-#print(url.path_list[1])
-#print(url.query['spm_id_from'])
-
