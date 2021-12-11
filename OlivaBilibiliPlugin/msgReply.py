@@ -47,6 +47,11 @@ def unity_reply(plugin_event, Proc):
             elif url.netloc == "b23.tv":
                 pass
 
+    if len(command_list) == 2:
+        if command_list[0].lower() == "/search":
+            response = OlivaBilibiliPlugin.bilibili.searchUserByName(command_list[1])
+            plugin_event.reply(response)
+
 
 
     if len(command_list) == 3:

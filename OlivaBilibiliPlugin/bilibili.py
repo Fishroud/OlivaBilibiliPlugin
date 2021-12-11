@@ -265,3 +265,35 @@ class URL:
     def path2list(self):
         path_list = list(filter(None,self.path.split("/")))
         return path_list
+
+
+def searchUserByName(name):
+    name = urllib.parse.quote(name)
+    api = "https://api.bilibili.com/x/web-interface/search/type?context=&search_type=bili_user&page=1&order=&keyword=" + name + "&category_id=&user_type=&order_sort=&changing=mid&__refresh__=true&_extra=&highlight=1&single_column=0"
+    payload={}
+    headers = {
+      'Cookie': 'LIVE_BUVID=AUTO2616196871676659'
+    }
+    response = requests.request("GET", api, headers=headers, data=payload)
+    searchjson = json.loads(response.text)
+    if searchjson['code'] == 0:
+        output = "共查找到" + str(searchjson['data']['numResults']) + "条记录\n"
+        if searchjson['data']['numResults'] == 0:
+            return output
+        search_result_list = searchjson['data']['result']
+        if len(search_result_list) > 5:
+            output += "由于条数过多，将优先显示前五条\n"
+            search_result_list = search_result_list[:5]
+        for search_result_this in search_result_list:
+            output += "[CQ:image,file=https:" + search_result_this['upic'] + "]\n"
+            output += search_result_this['uname'] + "[" + str(search_result_this['mid']) + "][LV" + str(search_result_this['level']) + "]\n"
+            if search_result_this['usign'] == "":
+                output += "此用户没有个性签名啊( `д´)\n"
+            else:
+                output += search_result_this['usign'] + "\n"
+            output += "视频数：" + str(search_result_this['videos']) + "，粉丝数：" + str(search_result_this['fans']) + "\n"
+        return output
+    else:
+        output = "查询失败( ﾟA。)"
+        return output
+
