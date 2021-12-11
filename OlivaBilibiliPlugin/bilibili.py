@@ -1,3 +1,16 @@
+'''
+ ██████╗ ██╗     ██╗██╗   ██╗ █████╗ ██████╗ ██╗██╗     ██╗
+██╔═══██╗██║     ██║██║   ██║██╔══██╗██╔══██╗██║██║     ██║
+██║   ██║██║     ██║██║   ██║███████║██████╔╝██║██║     ██║
+██║   ██║██║     ██║╚██╗ ██╔╝██╔══██║██╔══██╗██║██║     ██║
+╚██████╔╝███████╗██║ ╚████╔╝ ██║  ██║██████╔╝██║███████╗██║
+ ╚═════╝ ╚══════╝╚═╝  ╚═══╝  ╚═╝  ╚═╝╚═════╝ ╚═╝╚══════╝╚═╝
+@File      :   OlivaBilibiliPlugin/bilibili.py
+@Author    :   Fishroud鱼仙
+@Contact   :   fishroud@qq.com
+@Desc      :   None
+'''
+
 import OlivOS
 import OlivaBilibiliPlugin
 
@@ -30,9 +43,9 @@ class BILIUSER:
         if mid != 0:
             self.getUserDatafromApi()
             self.getUserDatabyRoomId(self.live['roomid'])
-        
 
-        
+
+
     def getUserDatafromApi(self):
         if self.mid != 0:
             api = "http://api.bilibili.com/x/space/acc/info?mid=" + str(self.mid)
@@ -56,6 +69,7 @@ class BILIUSER:
                 self.islegal = True
         return
 
+
     def getUserDatabyRoomId(self ,roomid):
         api = "http://api.live.bilibili.com/room/v1/Room/room_init?id=" + str(roomid)
         payload={}
@@ -68,6 +82,7 @@ class BILIUSER:
             self.mid = userjson['data']['uid']
             self.room_init = userjson['data']
         return
+
 
     def getUserLiveStatusbyUids(self ,uid_list = []):
         if not uid_list:
@@ -222,7 +237,7 @@ class VIDEO:
             output += "投稿时间：" + time.strftime("%Y-%m-%d %H:%M", time.localtime(self.ctime)) + "\n"
             output += "简介：" + self.desc + "\n"
             output += "点赞投币收藏：" + str(self.state['like']) + "-" + str(self.state['coin']) + "-" + str(self.state['favorite']) + "\n"
-            output += "分区：" + self.tname + "\n"
+            output += "播放数量：" + str(self.state['view'])
             return output
         else:
             return "视频查询失败"
