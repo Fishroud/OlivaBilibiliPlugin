@@ -17,6 +17,7 @@ import os
 import re
 import json
 import requests
+from xml.dom.minidom import parseString
 
 def unity_reply(plugin_event, Proc):
 
@@ -24,7 +25,7 @@ def unity_reply(plugin_event, Proc):
     command_list = deleteBlank(plugin_event.data.message)
     image_path = os.path.abspath(OlivaBilibiliPlugin.data.save_path).replace('\\','\\\\')
     matchJson = re.search(r'\[OP:json,data=(.*)\]', plugin_event.data.message)
-
+    matchXml = re.search(r'&#91;OP:xml,data=(.*)&#93;', plugin_event.data.message)
     if matchJson:
         opjson = json.loads(matchJson.group(1).replace('&#44;',','))
         url = opjson['meta']['detail_1']['qqdocurl']
@@ -40,7 +41,23 @@ def unity_reply(plugin_event, Proc):
                     response = video.getVideoInfo()
                     if response != '视频查询失败':
                         plugin_event.reply(response)
-                del url
+            del url
+    if matchXml:
+        xml = parseString(matchXml.group(1))
+        collection = xml.documentElement
+        if collection.hasAttribute('url'):
+            url = OlivaBilibiliPlugin.bilibili.URL(collection.getAttribute('url'))
+            if url.netloc == 'b23.tv':
+                html = url.getHtml().replace('\n','')
+                matchbv = matchBV(html)
+                if matchbv:
+                    bvid = matchbv.group(1)
+                    video = OlivaBilibiliPlugin.bilibili.VIDEO(bvid)
+                    video.getVideoDataFromApi()
+                    response = video.getVideoInfo()
+                    if response != '视频查询失败':
+                        plugin_event.reply(response)
+            del url
     if len(command_list) == 1:
         matchbv = matchBV(command_list[0])
         matchurl = matchUrl(command_list[0])
