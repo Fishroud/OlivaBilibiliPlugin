@@ -75,6 +75,16 @@ def unity_reply(plugin_event, Proc):
                         cqcode = '[OP:image,file=file:///' + save_path + ']'
                         plugin_event.reply(response + cqcode)
                         del url,biliUser
+            elif url.netloc == 'b23.tv':
+                html = url.getHtml().replace('\n','')
+                matchbv = matchBV(html)
+                if matchbv:
+                    bvid = matchbv.group(1)
+                    video = OlivaBilibiliPlugin.bilibili.VIDEO(bvid)
+                    video.getVideoDataFromApi()
+                    response = video.getVideoInfo()
+                    if response != '视频查询失败':
+                        plugin_event.reply(response)
     if len(command_list) == 2:
         if command_list[0].lower() == '/search':
             response = OlivaBilibiliPlugin.bilibili.searchUserByName(command_list[1])
