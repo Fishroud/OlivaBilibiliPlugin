@@ -100,16 +100,6 @@ class BILIUSER:
         if userjson['code'] == 0:
             self.live_key_frame = userjson['data'][self.mid]['keyframe']
 
-
-
-    def __str__(self):
-        if self.isLegal():
-            output = self.name + "[" + self.sex + "]" + "[LV" + str(self.level) + "]\n"
-            output += self.sign
-            return output
-        else:
-            return "用户不存在"
-    
     def isLegal(self):
         return self.islegal
     
@@ -158,7 +148,7 @@ class BILIUSER:
             output += self.name + "[" + str(self.mid) + "]" + "\n"
             output += "https://live.bilibili.com/" + str(self.live['roomid']) + "\n"
             output += "标题：" + self.live['title'] + "\n"
-            output += "[CQ:image,file=" + self.live['cover'] + "]\n"
+            output += "[OP:image,file=" + self.live['cover'] + "]\n"
             return output
         else:
             return "用户不存在"
@@ -176,6 +166,7 @@ class VIDEO:
         self.pubdate = None
         self.ctime = None
         self.desc = None
+        self.nowWatching = None
         self.owner = {}
         self.state = {}
         self.first_frame = None
@@ -206,38 +197,38 @@ class VIDEO:
             self.state = videojson['data']['stat']
             #self.first_frame = videojson['data']['pages'][0]['first_frame']
             self.islegal = True
+        api = "https://api.bilibili.com/x/player/online/total?cid="+ str(self.cid) + "&bvid=" + str(self.bvid)
+        payload={}
+        headers = {
+          'Cookie': 'LIVE_BUVID=AUTO2616196871676659'
+        }
+        response = requests.request("GET", api, headers=headers, data=payload)
+        responsejson = json.loads(response.text)
+        if responsejson['code'] == 0:
+            self.nowWatching = responsejson['data']['total']
+        return
 
-    def __str__(self):
-        if self.isLegal():
-            output = "[" + self.bvid + "]" + "[" + str(self.cid) + "]" + "[" + str(self.aid) + "]" + "\n"
-            output += "标题：" + self.title + "\n"
-            output += "分区：" + self.tname + "\n"
-            output += "封面链接：" + self.pic + "\n"
-            output += "发布时间：" + str(self.pubdate) + "\n"
-            output += "投稿时间：" + str(self.ctime) + "\n"
-            output += "简介：" + self.desc + "\n"
-            output += "点赞投币收藏：" + str(self.state['like']) + "-" + str(self.state['coin']) + "-" + str(self.state['favorite']) + "\n"
-            output += "分区：" + self.tname + "\n"
-            pic = LoadImg(self.pic)
-            pic.show()
-            return output
-        else:
-            return "视频信息加载失败"
 
     def isLegal(self):
         return self.islegal
-    
+
     def getVideoInfo(self):
         if self.isLegal():
             output = "[" + self.bvid + "]" + "\n" #"[" + str(self.cid) + "]" + "[" + str(self.aid) + "]" + 
-            output += "[CQ:image,file=" + self.pic + "]\n"
+            output += "[OP:image,file=" + self.pic + "]\n"
             output += "标题：" + self.title + "\n"
+            output += "UP主：" + self.owner['name'] + "[" + str(self.owner['mid']) + "]\n"
             output += "分区：" + self.tname + "\n"
             output += "发布时间：" + time.strftime("%Y-%m-%d %H:%M", time.localtime(self.pubdate)) + "\n"
             output += "投稿时间：" + time.strftime("%Y-%m-%d %H:%M", time.localtime(self.ctime)) + "\n"
-            output += "简介：" + self.desc + "\n"
+            if self.desc == "":
+                output += "简介： - \n"
+            else:
+                output += "简介：" + self.desc + "\n"
             output += "点赞投币收藏：" + str(self.state['like']) + "-" + str(self.state['coin']) + "-" + str(self.state['favorite']) + "\n"
-            output += "播放数量：" + str(self.state['view'])
+            output += "播放数量：" + str(self.state['view']) + "\n"
+            output += "在线观看人数：" + str(self.nowWatching) + "\n"
+            output += "链接：https://www.bilibili.com/video/"+ self.bvid
             return output
         else:
             return "视频查询失败"
@@ -280,6 +271,13 @@ class URL:
     def path2list(self):
         path_list = list(filter(None,self.path.split("/")))
         return path_list
+    
+    def getHtml(self):
+        url = self.url
+        payload={}
+        headers = {}
+        response = requests.request("GET", url, headers=headers, data=payload, allow_redirects=False)
+        return response.text
 
 
 def searchUserByName(name):
@@ -300,7 +298,7 @@ def searchUserByName(name):
             output += "由于条数过多，将优先显示前五条\n"
             search_result_list = search_result_list[:5]
         for search_result_this in search_result_list:
-            output += "[CQ:image,file=https:" + search_result_this['upic'] + "]\n"
+            output += "[OP:image,file=https:" + search_result_this['upic'] + "]\n"
             output += search_result_this['uname'] + "[" + str(search_result_this['mid']) + "][LV" + str(search_result_this['level']) + "]\n"
             if search_result_this['usign'] == "":
                 output += "此用户没有个性签名啊( `д´)\n"
