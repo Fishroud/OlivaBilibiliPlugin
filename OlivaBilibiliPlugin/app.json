@@ -1,8 +1,8 @@
 {
-    "name" : "Bilibili测试插件",
+    "name" : "OlivaBili",
     "namespace" : "OlivaBilibiliPlugin",
     "priority" : 30000,
-    "message_mode" : "old_string",
+    "message_mode" : "olivos_string",
     "support" : [
         {
             "sdk" : "onebot",
