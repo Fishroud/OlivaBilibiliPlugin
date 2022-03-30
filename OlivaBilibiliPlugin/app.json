@@ -1,12 +1,16 @@
 {
     "name" : "OlivaBili",
+    "author" : "Fishroud & HideUsSaveUs",
     "namespace" : "OlivaBilibiliPlugin",
+    "message_mode" : "old_string",
+    "version" : "1.1.1",
+    "svn" : 1019,
+    "compatible_svn" : 81,
     "priority" : 30000,
-    "message_mode" : "olivos_string",
     "support" : [
         {
-            "sdk" : "onebot",
-            "platform" : "qq",
+            "sdk" : "all",
+            "platform" : "all",
             "model" : "all"
         }
     ]

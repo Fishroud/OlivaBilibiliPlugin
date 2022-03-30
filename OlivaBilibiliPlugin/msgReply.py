@@ -18,6 +18,7 @@ import re
 import json
 import requests
 from xml.dom.minidom import parseString
+import datetime
 
 def unity_reply(plugin_event, Proc):
 
@@ -106,6 +107,21 @@ def unity_reply(plugin_event, Proc):
         if command_list[0].lower() == '/search':
             response = OlivaBilibiliPlugin.bilibili.searchUserByName(command_list[1])
             plugin_event.reply(response)
+        if command_list[1].lower() == "/today" :
+            api='https://bangumi.bilibili.com/web_api/timeline_global'
+            response = requests.request("GET", api)
+            i = datetime.datetime.now()
+            todayjson = json.loads(response.text)
+            if todayjson["code"]==0:
+                result=todayjson["result"]
+                today=str(i.month)+'-'+str(i.day)
+                for q in result:
+                    if today==q["date"]:
+                        seasons=q["seasons"]
+                        reply=""
+                        for z in seasons:
+                            reply=reply+"'{title}'在{time}更新了{pub_index}\n".format(title=z["title"],time=z["pub_time"],pub_index=z["pub_index"])
+                        plugin_event.reply(reply)
     if len(command_list) == 3:
         if command_list[0].lower() == '/up':
           #command_list[2].isdigit():
