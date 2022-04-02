@@ -9,8 +9,8 @@
     "priority" : 30000,
     "support" : [
         {
-            "sdk" : "all",
-            "platform" : "all",
+            "sdk" : "onebot",
+            "platform" : "qq",
             "model" : "all"
         }
     ]
