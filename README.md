@@ -19,19 +19,15 @@
   
 </div>
 
-## 开始使用
-
-**在使用前请安装额外依赖：Pillow**
-> pip install Pillow
-
-将opk文件放入\OlivOS\plugin\app目录下
-
-
 ## 触发指令
 
 >/up [-u|--uid] uid
 
 通过uid来查询用户基本信息
+
+>/today
+
+查询每日更新的番剧
 
 >/up [-r|--roomid] roomid
 
