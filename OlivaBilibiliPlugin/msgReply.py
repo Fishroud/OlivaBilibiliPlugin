@@ -26,7 +26,7 @@ def unity_reply(plugin_event, Proc):
     command_list = deleteBlank(plugin_event.data.message)
     image_path = os.path.abspath(OlivaBilibiliPlugin.data.save_path).replace('\\','\\\\')
     matchJson = re.search(r'\[OP:json,data=(.*)\]', plugin_event.data.message)
-    matchXml = re.search(r'&#91;OP:xml,data=(.*)&#93;', plugin_event.data.message)
+    matchXml = re.search(r'\[OP:xml,data=(.*)\]', plugin_event.data.message)
     if matchJson:
         opjson = json.loads(matchJson.group(1).replace('&#44;',','))
         url = opjson['meta']['detail_1']['qqdocurl']
